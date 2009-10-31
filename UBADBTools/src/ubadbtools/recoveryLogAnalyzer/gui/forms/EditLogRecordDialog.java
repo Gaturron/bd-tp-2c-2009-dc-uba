@@ -57,6 +57,8 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
         rbStart = new javax.swing.JRadioButton();
         rbUpdate = new javax.swing.JRadioButton();
         rbCommit = new javax.swing.JRadioButton();
+        rbCheckPointStart = new javax.swing.JRadioButton();
+        rbCheckPointEnd = new javax.swing.JRadioButton();
         jLabel2 = new javax.swing.JLabel();
         butCancelar = new javax.swing.JButton();
         butAceptar = new javax.swing.JButton();
@@ -79,6 +81,14 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
         rbCommit.setText("Commit"); // NOI18N
         rbCommit.setName("rbCommit"); // NOI18N
 
+        rbgActionType.add(rbCheckPointStart);
+        rbCheckPointStart.setText("CheckPoint Start"); // NOI18N
+        rbCheckPointStart.setName("rbCheckPointStart"); // NOI18N
+        
+        rbgActionType.add(rbCheckPointEnd);
+        rbCheckPointEnd.setText("CheckPoint End"); // NOI18N
+        rbCheckPointEnd.setName("rbCheckPointEnd"); // NOI18N        
+        
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
         jPanel1Layout.setHorizontalGroup(
@@ -88,7 +98,9 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(rbStart)
                     .addComponent(rbCommit)
-                    .addComponent(rbUpdate))
+                    .addComponent(rbUpdate)
+                    .addComponent(rbCheckPointStart)
+                    .addComponent(rbCheckPointEnd))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
@@ -96,8 +108,12 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addComponent(rbStart)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(rbUpdate)
+                .addComponent(rbUpdate)                
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbCheckPointStart)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(rbCheckPointEnd)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)                                
                 .addComponent(rbCommit, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(13, Short.MAX_VALUE))
         );
@@ -186,6 +202,8 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JRadioButton rbCommit;
+    private javax.swing.JRadioButton rbCheckPointStart;
+    private javax.swing.JRadioButton rbCheckPointEnd;
     private javax.swing.JRadioButton rbStart;
     private javax.swing.JRadioButton rbUpdate;
     private javax.swing.ButtonGroup rbgActionType;
