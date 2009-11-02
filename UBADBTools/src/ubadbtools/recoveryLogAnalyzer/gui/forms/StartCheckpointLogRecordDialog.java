@@ -1,14 +1,27 @@
 package ubadbtools.recoveryLogAnalyzer.gui.forms;
 
+import java.awt.Frame;
+import java.util.Set;
+
+import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
+
 public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
-    
+	private RecoveryLogRecord logRecord = null;    
 
     public StartCheckpointLogRecordDialog(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
     }
 
+    
+    public static RecoveryLogRecord showDialog(Frame parent, Set<String> transactions)
+    {
+    	StartCheckpointLogRecordDialog dialog = new StartCheckpointLogRecordDialog(parent, true);
+        dialog.setVisible(true);
+        
+        return dialog.logRecord;
+    }
     /** This method is called from within the constructor to
      * initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is
