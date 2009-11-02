@@ -183,6 +183,8 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
     		logRecord = StartLogRecordDialog.showDialog(parent, transactions);
     	else if(rbCommit.isSelected())
     		logRecord = CommitLogRecordDialog.showDialog(parent, transactions);
+    	else if(rbCheckPointStart.isSelected())
+    		logRecord = StartCheckpointLogRecordDialog.showDialog(parent, transactions);    	
     	else if(rbUpdate.isSelected())
     		logRecord = UpdateLogRecordDialog.showDialog(parent, transactions,items);
     	
