@@ -9,6 +9,7 @@ package ubadbtools.recoveryLogAnalyzer.gui.forms;
 import java.awt.Frame;
 import java.util.Set;
 
+import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
 
 @SuppressWarnings("serial")
@@ -85,7 +86,7 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
         rbCheckPointStart.setText("CheckPoint Start"); // NOI18N
         rbCheckPointStart.setName("rbCheckPointStart"); // NOI18N
         
-        rbgActionType.add(rbCheckPointEnd);
+        rbgActionType.add(rbCheckPointEnd); 
         rbCheckPointEnd.setText("CheckPoint End"); // NOI18N
         rbCheckPointEnd.setName("rbCheckPointEnd"); // NOI18N        
         
@@ -179,15 +180,17 @@ public class EditLogRecordDialog extends javax.swing.JDialog {
     {//GEN-FIRST:event_butAceptarMouseClicked
 
     	// Genero el registro de log segun los valores en los controles del dialogo
+    	
     	if(rbStart.isSelected())
     		logRecord = StartLogRecordDialog.showDialog(parent, transactions);
     	else if(rbCommit.isSelected())
     		logRecord = CommitLogRecordDialog.showDialog(parent, transactions);
     	else if(rbCheckPointStart.isSelected())
-    		logRecord = StartCheckpointLogRecordDialog.showDialog(parent, transactions);    	
+    		logRecord = StartCheckpointLogRecordDialog.showDialog(parent, transactions);
+    	else if(rbCheckPointEnd.isSelected())
+    		logRecord = new CheckPointEndLogRecord();
     	else if(rbUpdate.isSelected())
-    		logRecord = UpdateLogRecordDialog.showDialog(parent, transactions,items);
-    	
+    		logRecord = UpdateLogRecordDialog.showDialog(parent, transactions,items);   	
     	this.setVisible(false);
     }//GEN-LAST:event_butAceptarMouseClicked
 
