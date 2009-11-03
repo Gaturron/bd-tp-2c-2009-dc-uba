@@ -1,11 +1,16 @@
 package ubadbtools.recoveryLogAnalyzer.gui.forms;
 
 import java.awt.Frame;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
+import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
 
 @SuppressWarnings("serial")
 public class AnalyzeLogDialog extends JDialog
@@ -31,16 +36,53 @@ public class AnalyzeLogDialog extends JDialog
     //[end]
     
     //[start] AnalyzeValidity
-    public void AnalyzeValidity(RecoveryLog log)
+    public void AnalyzeValidity(RecoveryLog log1)
     {
+    	System.out.println("Empieza el analisis");
         //TODO: Completar
+    	
+    	RecoveryLog log =log1;
+    	
+    	//Para que un log UNDO sea valido debe cumplir las siguientes reglas:
+    	
+    	//+Una transacción T no puede hacer COMMIT si previamente no hizo un START.
+    	
+    	List<RecoveryLogRecord> logRecords = log.getLogRecords();
+    	
+		Set<String> transaccionesActivas = new HashSet<String>();
+    	
+    	for(Iterator<RecoveryLogRecord> it = logRecords.iterator(); it.hasNext();){
+    	
+    		RecoveryLogRecord item = it.next();
+    		    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)){
+    			transaccionesActivas.add(item.getTransaction());
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord.class)){
+    		
+    			if(transaccionesActivas.contains(item.getTransaction())){
+    				transaccionesActivas.remove(item.getTransaction());
+    			}
+    		}
+
+    		//System.out.println("trans: "+transaccionesActivas);
+    	}	
+    	System.out.println("Paso el test?: "+transaccionesActivas.isEmpty());
+    	
+    	//+Todas las acciones de UPDATE deben estar entre un START y un COMMIT de esa misma Transaccion involucrada
+    	
+    	//+Las transacciones que estan en START CKPT deben ser transacciones activas en ese momento
+    	
+    	//+Cuando esas transacciones activas hacen COMMIT se puede agregar el END CKPT
+    	
     }
     //[end]
 
     //[start] AnalyzeRecoverability
     public void AnalyzeRecoverability(RecoveryLog log)
     {
-        //TODO: Completar
+        //TODO: Completar LO HACE GONZAAAA!!!
     }
     //[end]
 
