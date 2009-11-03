@@ -1,23 +1,63 @@
 package ubadbtools.recoveryLogAnalyzer.gui.forms;
 
+import java.awt.Component;
 import java.awt.Frame;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.util.LinkedHashSet;
 import java.util.Set;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.GroupLayout;
+import javax.swing.JButton;
+import javax.swing.JList;
+import javax.swing.LayoutStyle;
+import javax.swing.ListModel;
 
+import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
+import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
+import ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord;
+import ubadbtools.util.guiHelper.GUIHelper;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
-	private RecoveryLogRecord logRecord = null;    
+	private RecoveryLogRecord logRecord = null;   
+	private Set<String> transactions;
+	private JButton butOut;
+	private JButton butIn;
+	private JList lstActiveTransactions;
+	private JList lstTransactions;
 
-    public StartCheckpointLogRecordDialog(java.awt.Frame parent, boolean modal) {
+    public StartCheckpointLogRecordDialog(java.awt.Frame parent, boolean modal, Set<String> transactions) {
         super(parent, modal);
         initComponents();
+        
+        //tomemos las transacciones que nos pasan por parametro
+        this.transactions = transactions;
+        
+        //System.out.println(transactions);
+        ListModel LstTransactionsModel = new DefaultComboBoxModel(transactions.toArray());
+        lstTransactions.setModel(LstTransactionsModel);
     }
 
     
     public static RecoveryLogRecord showDialog(Frame parent, Set<String> transactions)
     {
-    	StartCheckpointLogRecordDialog dialog = new StartCheckpointLogRecordDialog(parent, true);
+    	StartCheckpointLogRecordDialog dialog = new StartCheckpointLogRecordDialog(parent, true, transactions);
         dialog.setVisible(true);
         
         return dialog.logRecord;
@@ -36,7 +76,7 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
         btAceptar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Start Checkpoint");
+        setTitle("Start Checkpoint Vieja!");
 
         btCancelar.setText("Cancelar");
         btCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -54,6 +94,38 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
+        {
+        	butIn = new JButton();
+        	butIn.setText(">");
+        	butIn.addMouseListener(new MouseAdapter() {
+        		public void mouseClicked(MouseEvent evt) {
+        			butInMouseClicked(evt);
+        		}
+        	});
+        }
+        {
+        	butOut = new JButton();
+        	butOut.setText("<");
+        	butOut.addMouseListener(new MouseAdapter() {
+        		public void mouseClicked(MouseEvent evt) {
+        			butOutMouseClicked(evt);
+        		}
+        	});
+        }
+        {
+        	ListModel LstTransactionsModel = 
+        		new DefaultComboBoxModel(
+        				new String[] { });
+        	lstTransactions = new JList();
+        	lstTransactions.setModel(LstTransactionsModel);
+        }
+        {
+        	ListModel LstActiveTransactionsModel = 
+        		new DefaultComboBoxModel(
+        				new String[] {});
+        	lstActiveTransactions = new JList();
+        	lstActiveTransactions.setModel(LstActiveTransactionsModel);
+        }
         jPanel1Layout.setHorizontalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
@@ -75,20 +147,33 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(19, Short.MAX_VALUE))
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(116, Short.MAX_VALUE)
-                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(19, 19, 19))
-        );
+        layout.setVerticalGroup(layout.createSequentialGroup()
+        	.addContainerGap(65, 65)
+        	.addGroup(layout.createParallelGroup()
+        	    .addComponent(lstTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+        	    .addComponent(lstActiveTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+        	    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+        	        .addComponent(butIn, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+        	        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+        	        .addComponent(butOut, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+        	        .addGap(94)))
+        	.addGap(0, 31, Short.MAX_VALUE)
+        	.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
+        	.addContainerGap(19, 19));
+        layout.setHorizontalGroup(layout.createSequentialGroup()
+        	.addContainerGap()
+        	.addGroup(layout.createParallelGroup()
+        	    .addComponent(lstTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE)
+        	    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+        	        .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
+        	        .addGap(19)))
+        	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+        	.addGroup(layout.createParallelGroup()
+        	    .addComponent(butIn, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+        	    .addComponent(butOut, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
+        	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+        	.addComponent(lstActiveTransactions, 0, 151, Short.MAX_VALUE)
+        	.addContainerGap());
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -99,8 +184,55 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
     private void btAceptarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btAceptarMouseClicked
 //        logRecord = new CommitLogRecord((String)cbTransactions.getSelectedItem());
-        this.setVisible(false);
+    	if(lstActiveTransactions.getModel().getSize() == 0)
+        	GUIHelper.showWarningMessage(this, "Falta ingresar algún dato");
+    	else
+    	{
+    		Set<String> transaccionesActivas = new LinkedHashSet<String>();
+    		
+    		ListModel model = new DefaultListModel();
+    		model = lstActiveTransactions.getModel();
+    		
+    		for(int i = 0; i < model.getSize(); i++){
+    			transaccionesActivas.add((String) model.getElementAt(i));
+    		}
+    		
+    		System.out.println(transaccionesActivas);
+    		
+    		logRecord = new CheckPointStartLogRecord(transaccionesActivas);
+	        this.setVisible(false);
+    	}
     }//GEN-LAST:event_btAceptarMouseClicked
+    
+    private void butInMouseClicked(MouseEvent evt) {
+    	//TODO add your code for butIn.mouseClicked
+    	
+    	//el elemento elegido lo mandamos para la otra lista
+    	String selectedTransaction = (String) lstTransactions.getSelectedValue();
+    	
+    	ListModel model = new DefaultListModel();
+    	model = lstActiveTransactions.getModel();
+    	((DefaultComboBoxModel) model).addElement(selectedTransaction);
+    	
+    	//borro el elemento elegido de la lista de la izq
+    	model = lstTransactions.getModel();
+    	((DefaultComboBoxModel) model).removeElement(selectedTransaction);
+    }
+    
+    private void butOutMouseClicked(MouseEvent evt) {
+    	//TODO add your code for butOut.mouseClicked
+    	
+    	//el elemento elegido lo mandamos para la primer lista
+    	String selectedTransaction = (String) lstActiveTransactions.getSelectedValue();
+    	
+    	ListModel model = new DefaultListModel();
+    	model = lstTransactions.getModel();
+    	((DefaultComboBoxModel) model).addElement(selectedTransaction);
+    	
+    	//borro el elemento elegido de la lista de la der
+    	model = lstActiveTransactions.getModel();
+    	((DefaultComboBoxModel) model).removeElement(selectedTransaction);
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btAceptar;
