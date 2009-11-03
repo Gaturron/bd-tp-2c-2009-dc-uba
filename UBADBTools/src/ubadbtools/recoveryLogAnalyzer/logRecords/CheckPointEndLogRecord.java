@@ -10,6 +10,6 @@ public class CheckPointEndLogRecord extends RecoveryLogRecord {
 	
 	public String toString()
 	{
-		return "<END Check Point>"; 
+		return "<END CKPT>"; 
 	}
 }
