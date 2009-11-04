@@ -5,11 +5,16 @@ import java.util.Set;
 
 public class CheckPointStartLogRecord extends RecoveryLogRecord
 {
-	Set<String> transactions;
+	private Set<String> transactions;
 	
 	public CheckPointStartLogRecord(Set<String> transactions) 
 	{
 		this.transactions = transactions;
+	}
+	
+	public Set<String> getTransactions()
+	{
+		return this.transactions;
 	}
 	
 	public String toString()

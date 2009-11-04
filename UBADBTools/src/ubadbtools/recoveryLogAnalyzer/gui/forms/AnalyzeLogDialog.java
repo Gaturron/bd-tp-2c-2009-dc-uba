@@ -10,6 +10,7 @@ import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
 import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
+import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
 
 @SuppressWarnings("serial")
@@ -45,6 +46,10 @@ public class AnalyzeLogDialog extends JDialog
     	
     	//Para que un log UNDO sea valido debe cumplir las siguientes reglas:
     	
+    	//NOTA: nose si ir chequeando cada regla por separado como estoy haciendo o 
+    	//hacer un bloque de codigo que chequee todo junto, hay muchas partes
+    	// que se podrian optimizar. Mucho codigo copy pasteado
+    	
     	//+Una transacción T no puede hacer COMMIT si previamente no hizo un START.
     	
     	List<RecoveryLogRecord> logRecords = log.getLogRecords();
@@ -68,13 +73,110 @@ public class AnalyzeLogDialog extends JDialog
 
     		//System.out.println("trans: "+transaccionesActivas);
     	}	
-    	System.out.println("Paso el test?: "+transaccionesActivas.isEmpty());
+    	System.out.println("Paso el test1?: "+transaccionesActivas.isEmpty());
     	
     	//+Todas las acciones de UPDATE deben estar entre un START y un COMMIT de esa misma Transaccion involucrada
     	
+    	transaccionesActivas = new HashSet<String>();
+    	boolean res = true;
+    	
+    	for(Iterator<RecoveryLogRecord> it = logRecords.iterator(); it.hasNext();){
+    		
+    		RecoveryLogRecord item = it.next();
+    	
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)){
+    			transaccionesActivas.add(item.getTransaction());
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord.class)){
+    			
+    			if(transaccionesActivas.contains(item.getTransaction())){
+    				//todo ok, este update esta entre un start y commit
+    			}else{
+    				//no esta, falla
+    				res = false;
+    			}
+    			
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord.class)){
+    		
+    			if(transaccionesActivas.contains(item.getTransaction())){
+    				transaccionesActivas.remove(item.getTransaction());
+    			}
+    		}
+    	}
+    	System.out.println("Paso el test2?: "+res);
+    	
     	//+Las transacciones que estan en START CKPT deben ser transacciones activas en ese momento
     	
+    	transaccionesActivas = new HashSet<String>();
+    	res = true;
+    	
+    	for(Iterator<RecoveryLogRecord> it = logRecords.iterator(); it.hasNext();){
+    		
+    		RecoveryLogRecord item = it.next();
+    	
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)){
+    			transaccionesActivas.add(item.getTransaction());
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord.class)){
+    			
+    			Set<String> trans = ((CheckPointStartLogRecord) item).getTransactions();
+    			
+    			if(trans.equals(transaccionesActivas))
+    			{
+    				//todo ok
+    			}else{
+    				//todo mal falla
+    				res = false;
+    			}
+    			
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord.class)){
+    		
+    			if(transaccionesActivas.contains(item.getTransaction())){
+    				transaccionesActivas.remove(item.getTransaction());
+    			}
+    		}
+    	}
+    	System.out.println("Paso el test3?: "+res);
+    	
     	//+Cuando esas transacciones activas hacen COMMIT se puede agregar el END CKPT
+    	
+    	transaccionesActivas = new HashSet<String>();
+    	res = true;
+    	
+    	for(Iterator<RecoveryLogRecord> it = logRecords.iterator(); it.hasNext();){
+    		
+    		RecoveryLogRecord item = it.next();
+    	
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)){
+    			transaccionesActivas.add(item.getTransaction());
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord.class)){
+    			
+    			if(transaccionesActivas.isEmpty())
+    			{
+    				//todo ok
+    			}else{
+    				//todo mal falla
+    				res = false;
+    			}
+    			
+    		}
+    		
+    		if(item.getClass().equals(ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord.class)){
+    		
+    			if(transaccionesActivas.contains(item.getTransaction())){
+    				transaccionesActivas.remove(item.getTransaction());
+    			}
+    		}
+    	}
+    	System.out.println("Paso el test4?: "+res);
     	
     }
     //[end]
