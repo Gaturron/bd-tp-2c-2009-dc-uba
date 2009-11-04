@@ -35,7 +35,7 @@ import ubadbtools.util.guiHelper.GUIHelper;
 */
 public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
-	private RecoveryLogRecord logRecord = null;   
+	private RecoveryLogRecord logRecord;   
 	private Set<String> transactions;
 	private JButton butOut;
 	private JButton butIn;
@@ -94,6 +94,17 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setVerticalGroup(jPanel1Layout.createSequentialGroup()
+        	.addContainerGap(21, Short.MAX_VALUE)
+        	.addGroup(jPanel1Layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+        	    .addComponent(btAceptar, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+        	    .addComponent(btCancelar, GroupLayout.Alignment.BASELINE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)));
+        jPanel1Layout.setHorizontalGroup(jPanel1Layout.createSequentialGroup()
+        	.addContainerGap(18, 18)
+        	.addComponent(btAceptar, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+        	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+        	.addComponent(btCancelar, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+        	.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         {
         	butIn = new JButton();
         	butIn.setText(">");
@@ -126,53 +137,36 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
         	lstActiveTransactions = new JList();
         	lstActiveTransactions.setModel(LstActiveTransactionsModel);
         }
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(18, Short.MAX_VALUE)
-                .addComponent(btAceptar)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(btCancelar)
-                .addContainerGap())
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btCancelar)
-                    .addComponent(btAceptar))
-                .addGap(36, 36, 36))
-        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setVerticalGroup(layout.createSequentialGroup()
-        	.addContainerGap(65, 65)
+        	.addContainerGap()
         	.addGroup(layout.createParallelGroup()
-        	    .addComponent(lstTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
-        	    .addComponent(lstActiveTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
         	    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
         	        .addComponent(butIn, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
         	        .addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
         	        .addComponent(butOut, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
-        	        .addGap(94)))
-        	.addGap(0, 31, Short.MAX_VALUE)
-        	.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 42, GroupLayout.PREFERRED_SIZE)
-        	.addContainerGap(19, 19));
+        	        .addGap(94))
+        	    .addComponent(lstTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE)
+        	    .addComponent(lstActiveTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 147, GroupLayout.PREFERRED_SIZE))
+        	.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+        	.addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 75, GroupLayout.PREFERRED_SIZE)
+        	.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE));
         layout.setHorizontalGroup(layout.createSequentialGroup()
         	.addContainerGap()
         	.addGroup(layout.createParallelGroup()
-        	    .addComponent(lstTransactions, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE)
         	    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-        	        .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 142, GroupLayout.PREFERRED_SIZE)
-        	        .addGap(19)))
-        	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-        	.addGroup(layout.createParallelGroup()
-        	    .addComponent(butIn, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
-        	    .addComponent(butOut, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
-        	.addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
-        	.addComponent(lstActiveTransactions, 0, 151, Short.MAX_VALUE)
+        	        .addComponent(lstTransactions, GroupLayout.PREFERRED_SIZE, 161, GroupLayout.PREFERRED_SIZE)
+        	        .addPreferredGap(LayoutStyle.ComponentPlacement.RELATED)
+        	        .addGroup(layout.createParallelGroup()
+        	            .addComponent(butIn, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE)
+        	            .addComponent(butOut, GroupLayout.Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 55, GroupLayout.PREFERRED_SIZE))
+        	        .addComponent(lstActiveTransactions, GroupLayout.PREFERRED_SIZE, 151, GroupLayout.PREFERRED_SIZE)
+        	        .addGap(0, 0, Short.MAX_VALUE))
+        	    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+        	        .addComponent(jPanel1, GroupLayout.PREFERRED_SIZE, 284, GroupLayout.PREFERRED_SIZE)
+        	        .addGap(0, 89, Short.MAX_VALUE)))
         	.addContainerGap());
 
         pack();
