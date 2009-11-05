@@ -1,6 +1,9 @@
 package ubadbtools.recoveryLogAnalyzer.gui.forms;
 
 import java.awt.Frame;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -9,22 +12,29 @@ import java.util.Set;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
+import com.sun.xml.internal.ws.util.StringUtils;
+
 import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
+import ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
 
 @SuppressWarnings("serial")
 public class AnalyzeLogDialog extends JDialog
 {
+	private Collection<ValidationLogRecord> validationLogRecords = new ArrayList<ValidationLogRecord>(); 
+	
+	
 	//[start] Constructor
     public AnalyzeLogDialog(Frame parent, boolean modal, RecoveryLog log)
     {
     	super(parent, modal);
+        AnalyzeValidity(log);
+        AnalyzeRecoverability(log);
         initComponents();
         
         // Analizo cada aspecto del log
-        AnalyzeValidity(log);
-        AnalyzeRecoverability(log);
+
     }
     //[end]
     
@@ -50,7 +60,7 @@ public class AnalyzeLogDialog extends JDialog
     	//hacer un bloque de codigo que chequee todo junto, hay muchas partes
     	// que se podrian optimizar. Mucho codigo copy pasteado
     	
-    	//+Una transacción T no puede hacer COMMIT si previamente no hizo un START.
+    	//+Una transacciï¿½n T no puede hacer COMMIT si previamente no hizo un START.
     	
     	List<RecoveryLogRecord> logRecords = log.getLogRecords();
     	
@@ -72,8 +82,9 @@ public class AnalyzeLogDialog extends JDialog
     		}
 
     		//System.out.println("trans: "+transaccionesActivas);
-    	}	
-    	System.out.println("Paso el test1?: "+transaccionesActivas.isEmpty());
+    	}    	
+    	validationLogRecords.add(new ValidationLogRecord("Paso el test1?:", transaccionesActivas.isEmpty()));
+    	//System.out.println("Paso el test1?: "+transaccionesActivas.isEmpty());
     	
     	//+Todas las acciones de UPDATE deben estar entre un START y un COMMIT de esa misma Transaccion involucrada
     	
@@ -105,8 +116,9 @@ public class AnalyzeLogDialog extends JDialog
     				transaccionesActivas.remove(item.getTransaction());
     			}
     		}
-    	}
-    	System.out.println("Paso el test2?: "+res);
+    	}    	
+    	validationLogRecords.add(new ValidationLogRecord("Paso el test2?:", res));
+    	//System.out.println("Paso el test2?: "+res);
     	
     	//+Las transacciones que estan en START CKPT deben ser transacciones activas en ese momento
     	
@@ -141,8 +153,9 @@ public class AnalyzeLogDialog extends JDialog
     				transaccionesActivas.remove(item.getTransaction());
     			}
     		}
-    	}
-    	System.out.println("Paso el test3?: "+res);
+    	}    	
+    	validationLogRecords.add(new ValidationLogRecord("Paso el test3?:", res));
+    	
     	
     	//+Cuando esas transacciones activas hacen COMMIT se puede agregar el END CKPT
     	
@@ -176,7 +189,8 @@ public class AnalyzeLogDialog extends JDialog
     			}
     		}
     	}
-    	System.out.println("Paso el test4?: "+res);
+    	validationLogRecords.add(new ValidationLogRecord("Paso el test4?:", res));
+    	//System.out.println("Paso el test4?: "+res);
     	
     }
     //[end]
@@ -204,6 +218,16 @@ public class AnalyzeLogDialog extends JDialog
 	}
 	//[end]
 	
+	private void formatLogMesagges (javax.swing.JTextArea logInfo){
+		for (Iterator iter = validationLogRecords.iterator(); iter.hasNext();) {
+			ValidationLogRecord record = (ValidationLogRecord) iter.next();
+			logInfo.setText(logInfo.getText() + record.getValidationDesc() + " :" + record.isResult() + "\n");
+			
+		}
+		
+		
+	}
+	
     //[start] InitComponents (AUTO-GENERATED)
     /** This method is called from within the constructor to
      * initialize the form.
@@ -214,9 +238,14 @@ public class AnalyzeLogDialog extends JDialog
     private void initComponents() {
 
         butCerrar = new javax.swing.JButton();
+        logInfo = new javax.swing.JTextArea();
 
-        setTitle("Análisis de log");
-
+        setTitle("Anï¿½lisis de log");  
+        
+        
+        this.formatLogMesagges(logInfo);
+        logInfo.setEditable(false);
+        logInfo.setOpaque(true);
         butCerrar.setText("Cerrar");
         butCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -227,17 +256,19 @@ public class AnalyzeLogDialog extends JDialog
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)           
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(333, Short.MAX_VALUE)
-                .addComponent(butCerrar)
+            	.addComponent(logInfo)
+                .addContainerGap(333, Short.MAX_VALUE)                
+                .addComponent(butCerrar)             
                 .addContainerGap())
         );
         layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)            
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(442, Short.MAX_VALUE)
-                .addComponent(butCerrar)
+                .addComponent(logInfo)
+                .addContainerGap(442, Short.MAX_VALUE)                
+                .addComponent(butCerrar)              
                 .addContainerGap())
         );
 
@@ -254,6 +285,7 @@ public class AnalyzeLogDialog extends JDialog
 	//[start] Variables Form (AUTO-GENERATED)
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton butCerrar;
+    private javax.swing.JTextArea logInfo;
     // End of variables declaration//GEN-END:variables
     //[end]
 }
