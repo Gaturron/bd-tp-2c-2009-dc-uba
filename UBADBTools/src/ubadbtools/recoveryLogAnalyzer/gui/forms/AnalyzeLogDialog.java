@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -13,16 +14,22 @@ import javax.swing.JOptionPane;
 
 import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
 import ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord;
+import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord;
+import ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
+import ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord;
+import ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord;
+import ubadbtools.recoveryLogAnalyzer.results.RecoveryResult;
 
 @SuppressWarnings("serial")
 public class AnalyzeLogDialog extends JDialog {
 	// estructuras comunes a los metodos de validacion
 	private Set<String> transaccionesActivas = new HashSet<String>();
 	private Collection<ValidationLogRecord> validationLogRecords = new ArrayList<ValidationLogRecord>();
+	
+	private RecoveryResult recoveryResults = null;
 
-	// [start] Constructor
 	public AnalyzeLogDialog(Frame parent, boolean modal, RecoveryLog log) {
 		super(parent, modal);
 		AnalyzeValidity(log);
@@ -153,6 +160,7 @@ public class AnalyzeLogDialog extends JDialog {
 	// [start] AnalyzeRecoverability
 	public void AnalyzeRecoverability(RecoveryLog log) {
 		// TODO: Completar LO HACE GONZAAAA!!!
+		recoveryResults = log.recoverFromCrash();
 	}
 
 	// [end]
@@ -171,15 +179,27 @@ public class AnalyzeLogDialog extends JDialog {
 	// [end]
 
 	private void formatLogMesagges(javax.swing.JTextArea logInfo) {
+		String textToShow = "";
+		
+		textToShow += ("\n" + "\t\tResultados de validacion del log\t\t\n");
 		for (Iterator iter = validationLogRecords.iterator(); iter.hasNext();) {
 			ValidationLogRecord record = (ValidationLogRecord) iter.next();
-			logInfo.setText(logInfo.getText() + record.getValidationDesc()
+			textToShow += (logInfo.getText() + record.getValidationDesc()
 					+ " :" + record.isResult() + "\n");
 
 		}
 
+		textToShow += ("\n" + "\t\tPasos a efectuar segun algoritmo de recovery\t\t\n");
+		
+		
+		for (Iterator<String> it = recoveryResults.getItems().iterator(); it.hasNext();)
+		{
+			textToShow += (logInfo.getText() + it.next() + "\n");
+		}
+		
+		logInfo.setText(textToShow);
 	}
-
+	
 	// [start] InitComponents (AUTO-GENERATED)
 	/**
 	 * This method is called from within the constructor to initialize the form.
