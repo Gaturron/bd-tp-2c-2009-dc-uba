@@ -85,7 +85,7 @@ public class RecoveryLog
 	//[start] RecoverFromCrash
 	public RecoveryResult recoverFromCrash()
 	{
-		//TODO: ESTO LO HIZO EL GOOONZA
+		//TODO: ESTO LO HIZO EL GOONZA
 		
 		RecoveryLogRecord currentElem = null;
 		String currentTransaction = null;
