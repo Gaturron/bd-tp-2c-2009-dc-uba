@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Set;
 
 import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord;
@@ -85,14 +86,16 @@ public class RecoveryLog
 	//[start] RecoverFromCrash
 	public RecoveryResult recoverFromCrash()
 	{
-		//TODO: ESTO LO HIZO EL GOONZA
-		
+		//TODO: ESTO LO HIZO EL GOOONZA
+		RecoveryResult result = new RecoveryResult();
 		RecoveryLogRecord currentElem = null;
 		String currentTransaction = null;
 		HashSet<String> transactionsCommited = new HashSet<String>();
 		boolean checkPoinEndFound = false;
-		for (Iterator<RecoveryLogRecord> it = logRecords.iterator(); it.hasNext(); currentElem = it.next())
+		ListIterator<RecoveryLogRecord> it = (ListIterator<RecoveryLogRecord>) logRecords.listIterator(logRecords.size());
+		while (it.hasPrevious())
 		{
+				currentElem = it.previous();
 				currentTransaction = currentElem.getTransaction();
 				
 				// COMMIT RECORD?
@@ -104,11 +107,19 @@ public class RecoveryLog
 							transactionsCommited.contains(currentTransaction))
 				{
 					/*
-					 * Este caso contempla el hecho que una transaccion T1 termine habiendo hecho commit y
-					 * posteriormente se cree otra con el mismo nombre y que no haga commit.  
+					 * La transaccion fue comiteada correctamente. Tengo que sacarla de "transactionsCommited"
+					 * para contemplar el caso en que en un mismo log hubiera otra transaccion con
+					 * este nombre que podria no hacer commit  
 					 */
 					transactionsCommited.remove(currentTransaction);
 					
+				} else if (currentElem instanceof StartLogRecord &&
+						!transactionsCommited.contains(currentTransaction))
+				{
+					/*
+					 * Llegue al start de una transaccion que no hizo commit, hubo que rollbackearla
+					 */
+					result.addItem("Agregar un Abort al log para la transaccion " + currentTransaction);
 				// UPDATE RECORD?
 				} else if (currentElem instanceof UpdateLogRecord &&
 							!transactionsCommited.contains(currentTransaction))
@@ -117,8 +128,8 @@ public class RecoveryLog
 					 * La transaccion no fue comiteada, de modo que hay que revertir el valor del item
 					 */
 					UpdateLogRecord item = (UpdateLogRecord) currentElem;
-					System.out.println("Restaurar el item " + item.getItem() + " al valor " + item.getOldValue());
-					System.out.println("Agregar un Abort al log para la transaccion " + currentTransaction);
+					result.addItem( "Restaurar el item " + item.getItem() + " al valor " + item.getOldValue() );
+					
 				
 				// USEFULL CHECKPOINT START RECORD?
 				} else if (currentElem instanceof CheckPointStartLogRecord && checkPoinEndFound)
@@ -151,12 +162,12 @@ public class RecoveryLog
 					checkPoinEndFound = true;
 				} else
 				{
-					System.out.println("ERROR: Item no reconocido : " + currentElem.toString());
+					result.addItem("ERROR: Item no reconocido : " + currentElem.toString());
 					continue;
 				}
 		}
 		
-		return null;
+		return result;
 		
 	}
 	//[end]
