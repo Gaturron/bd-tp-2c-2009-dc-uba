@@ -2,7 +2,6 @@ package ubadbtools.recoveryLogAnalyzer.common;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.ListIterator;
@@ -130,7 +129,14 @@ public class RecoveryLog
 					UpdateLogRecord item = (UpdateLogRecord) currentElem;
 					result.addItem( "Restaurar el item " + item.getItem() + " al valor " + item.getOldValue() );
 					
-				
+				} else if (currentElem instanceof UpdateLogRecord &&
+							transactionsCommited.contains(currentTransaction))
+					/*
+					 * La transaccion fue comiteada, de modo que no hay que restaurar nada
+					 */
+				{
+					continue;
+					
 				// USEFULL CHECKPOINT START RECORD?
 				} else if (currentElem instanceof CheckPointStartLogRecord && checkPoinEndFound)
 				{
