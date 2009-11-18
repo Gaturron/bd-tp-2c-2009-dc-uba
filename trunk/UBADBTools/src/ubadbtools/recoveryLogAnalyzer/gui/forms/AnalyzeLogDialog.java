@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -14,20 +13,19 @@ import javax.swing.JOptionPane;
 
 import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
 import ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord;
-import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord;
-import ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
-import ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord;
-import ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord;
 import ubadbtools.recoveryLogAnalyzer.results.RecoveryResult;
 
 @SuppressWarnings("serial")
 public class AnalyzeLogDialog extends JDialog {
 	// estructuras comunes a los metodos de validacion
 	private Set<String> transaccionesActivas = new HashSet<String>();
+	private Set<String> transaccionesComiteadas = new HashSet<String>();
+	private Set<String> transaccionesStarteadas = new HashSet<String>();
+	private boolean lastValueForUpdatesOutOfBounds = true;
 	private Collection<ValidationLogRecord> validationLogRecords = new ArrayList<ValidationLogRecord>();
-	
+
 	private RecoveryResult recoveryResults = null;
 
 	public AnalyzeLogDialog(Frame parent, boolean modal, RecoveryLog log) {
@@ -52,8 +50,6 @@ public class AnalyzeLogDialog extends JDialog {
 
 	// [start] AnalyzeValidity
 	public void AnalyzeValidity(RecoveryLog log1) {
-		System.out.println("Empieza el analisis");
-		// TODO: Completar
 
 		RecoveryLog log = log1;
 
@@ -83,6 +79,7 @@ public class AnalyzeLogDialog extends JDialog {
 					.equals(
 							ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)) {
 				transaccionesActivas.add(item.getTransaction());
+				transaccionesStarteadas.add(item.getTransaction());
 			}
 
 			resCheckUpdateBetweenStartAndCommit = checkUpdateBetweenStartAndCommit(item);
@@ -93,7 +90,7 @@ public class AnalyzeLogDialog extends JDialog {
 					.getClass()
 					.equals(
 							ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord.class)) {
-
+				transaccionesComiteadas.add(item.getTransaction());
 				if (transaccionesActivas.contains(item.getTransaction())) {
 					transaccionesActivas.remove(item.getTransaction());
 				}
@@ -103,13 +100,13 @@ public class AnalyzeLogDialog extends JDialog {
 		}
 		validationLogRecords
 				.add(new ValidationLogRecord(
-						"No hay transacciones que hagan Commit sin haber sin su correspondiente START:",
+						"No hay transacciones que hagan Commit sin haber hecho su correspondiente START:",
 						resCheckAllStartAndCommitClosures));
 		validationLogRecords.add(new ValidationLogRecord(
 				"No hay updates que no esten entre un start y un commit:",
 				resCheckUpdateBetweenStartAndCommit));
 		validationLogRecords.add(new ValidationLogRecord(
-				"Los START CKPT solo contemplan transacciones activas:",
+				"Los START CKPT contemplan todas las transacciones activas:",
 				resCheckAllTransactionsOnCKPTAreActive));
 		validationLogRecords.add(new ValidationLogRecord(
 				"Los END CKPT estan colocados correctamente:",
@@ -122,14 +119,15 @@ public class AnalyzeLogDialog extends JDialog {
 				.getClass()
 				.equals(
 						ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord.class)) {
-			return transaccionesActivas.contains(item.getTransaction());
+			lastValueForUpdatesOutOfBounds = transaccionesActivas.contains(item.getTransaction()) && lastValueForUpdatesOutOfBounds;
+			return lastValueForUpdatesOutOfBounds;
 		}
-		return true;
+		return lastValueForUpdatesOutOfBounds;
 
 	}
 
 	private boolean checkAllStartAndCommitClosures(RecoveryLogRecord item) {
-		return (transaccionesActivas.isEmpty());
+		return (transaccionesStarteadas.containsAll(transaccionesComiteadas));
 	}
 
 	private boolean checkAllTransactionsOnCKPTAreActive(RecoveryLogRecord item) {
@@ -180,7 +178,7 @@ public class AnalyzeLogDialog extends JDialog {
 
 	private void formatLogMesagges(javax.swing.JTextArea logInfo) {
 		String textToShow = "";
-		
+
 		textToShow += ("\n" + "\t\tResultados de validacion del log\t\t\n");
 		for (Iterator iter = validationLogRecords.iterator(); iter.hasNext();) {
 			ValidationLogRecord record = (ValidationLogRecord) iter.next();
@@ -189,17 +187,17 @@ public class AnalyzeLogDialog extends JDialog {
 
 		}
 
-		textToShow += ("\n" + "\t\tPasos a efectuar segun algoritmo de recovery\t\t\n");
-		
-		
-		for (Iterator<String> it = recoveryResults.getItems().iterator(); it.hasNext();)
-		{
+		textToShow += ("\n"
+				+ "\t\tPasos a efectuar segun algoritmo de recovery\t\t\n");
+
+		for (Iterator<String> it = recoveryResults.getItems().iterator(); it
+				.hasNext();) {
 			textToShow += (logInfo.getText() + it.next() + "\n");
 		}
-		
+
 		logInfo.setText(textToShow);
 	}
-	
+
 	// [start] InitComponents (AUTO-GENERATED)
 	/**
 	 * This method is called from within the constructor to initialize the form.
