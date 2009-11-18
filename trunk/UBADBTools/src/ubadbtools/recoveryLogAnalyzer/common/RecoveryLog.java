@@ -127,7 +127,8 @@ public class RecoveryLog
 					 * La transaccion no fue comiteada, de modo que hay que revertir el valor del item
 					 */
 					UpdateLogRecord item = (UpdateLogRecord) currentElem;
-					result.addItem( "Restaurar el item " + item.getItem() + " al valor " + item.getOldValue() );
+					result.addItem( "Restaurar el item " + item.getItem() + " al valor " + 
+									item.getOldValue() + " en la transaccion " + currentTransaction);
 					
 				} else if (currentElem instanceof UpdateLogRecord &&
 							transactionsCommited.contains(currentTransaction))
