@@ -3,6 +3,7 @@ package ubadbtools.recoveryLogAnalyzer.gui.forms;
 import java.awt.Frame;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -23,8 +24,8 @@ public class AnalyzeLogDialog extends JDialog {
 	private Set<String> transaccionesActivas = new HashSet<String>();
 	private Set<String> transaccionesComiteadas = new HashSet<String>();
 	private Set<String> transaccionesStarteadas = new HashSet<String>();
-	private boolean lastValueForUpdatesOutOfBounds = true;
 	private Collection<ValidationLogRecord> validationLogRecords = new ArrayList<ValidationLogRecord>();
+	private Set<String> activeTXOnCKPT = new HashSet<String>();
 
 	private RecoveryResult recoveryResults = null;
 
@@ -69,6 +70,11 @@ public class AnalyzeLogDialog extends JDialog {
 		boolean resCheckUpdateBetweenStartAndCommit = true;
 		boolean resCheckAllTransactionsOnCKPTAreActive = true;
 		boolean resCheckAllTransactionCommitBeforAndCKPT = true;
+		boolean resCheckAllTransactionStartedOutOfClosure = true;
+		boolean resCheckAllTransactionCommitOutOfClosure = true;
+		boolean resCheckAllCKPTClosure = true;
+		
+		boolean isCKPTOn = false;
 
 		for (Iterator<RecoveryLogRecord> it = logRecords.iterator(); it
 				.hasNext();) {
@@ -79,19 +85,51 @@ public class AnalyzeLogDialog extends JDialog {
 					.equals(
 							ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)) {
 				transaccionesActivas.add(item.getTransaction());
+				resCheckAllTransactionStartedOutOfClosure = resCheckAllTransactionStartedOutOfClosure
+						&& checkAllTransactionStartedOutOfClosure(item);
 				transaccionesStarteadas.add(item.getTransaction());
 			}
 
-			resCheckUpdateBetweenStartAndCommit = checkUpdateBetweenStartAndCommit(item);
-			resCheckAllTransactionsOnCKPTAreActive = checkAllTransactionsOnCKPTAreActive(item);
-			resCheckAllTransactionCommitBeforAndCKPT = checkAllTransactionCommitBeforAndCKPT(item);
+			if (item
+					.getClass()
+					.equals(
+							ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord.class)) {
+				isCKPTOn = !isCKPTOn;
+				resCheckAllCKPTClosure = resCheckAllCKPTClosure && !isCKPTOn;
+				resCheckAllTransactionCommitBeforAndCKPT = resCheckAllTransactionCommitBeforAndCKPT
+						&& checkAllTransactionCommitBeforAndCKPT(item);
+				
+
+			}
+
+			if (item
+					.getClass()
+					.equals(
+							ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord.class)) {
+				isCKPTOn = !isCKPTOn;
+				resCheckAllCKPTClosure = resCheckAllCKPTClosure && isCKPTOn;
+				resCheckAllTransactionsOnCKPTAreActive = resCheckAllTransactionsOnCKPTAreActive
+						&& checkAllTransactionsOnCKPTAreActive(item);
+				activeTXOnCKPT.addAll(((CheckPointStartLogRecord)item).getTransactions());
+
+			}
+
+			if (item
+					.getClass()
+					.equals(
+							ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord.class)) {
+				resCheckUpdateBetweenStartAndCommit = resCheckUpdateBetweenStartAndCommit
+						&& checkUpdateBetweenStartAndCommit(item);
+			}
 
 			if (item
 					.getClass()
 					.equals(
 							ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord.class)) {
 				transaccionesComiteadas.add(item.getTransaction());
-				if (transaccionesActivas.contains(item.getTransaction())) {
+				resCheckAllTransactionCommitOutOfClosure = resCheckAllTransactionCommitOutOfClosure
+						&& checkAllTransactionCommitOutOfClosure(item);
+				if (resCheckAllTransactionCommitOutOfClosure) {
 					transaccionesActivas.remove(item.getTransaction());
 				}
 
@@ -111,46 +149,47 @@ public class AnalyzeLogDialog extends JDialog {
 		validationLogRecords.add(new ValidationLogRecord(
 				"Los END CKPT estan colocados correctamente:",
 				resCheckAllTransactionCommitBeforAndCKPT));
+		validationLogRecords.add(new ValidationLogRecord(
+				"Las transacciones no se solapan",
+				resCheckAllTransactionStartedOutOfClosure
+						|| resCheckAllTransactionCommitOutOfClosure));
+		validationLogRecords.add(new ValidationLogRecord(
+				"Los registros de CKPT no se solapan",
+				resCheckAllCKPTClosure));
 
 	}
 
 	private boolean checkUpdateBetweenStartAndCommit(RecoveryLogRecord item) {
-		if (item
-				.getClass()
-				.equals(
-						ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord.class)) {
-			lastValueForUpdatesOutOfBounds = transaccionesActivas.contains(item.getTransaction()) && lastValueForUpdatesOutOfBounds;
-			return lastValueForUpdatesOutOfBounds;
-		}
-		return lastValueForUpdatesOutOfBounds;
-
+		return transaccionesActivas.contains(item.getTransaction());
 	}
 
 	private boolean checkAllStartAndCommitClosures(RecoveryLogRecord item) {
 		return (transaccionesStarteadas.containsAll(transaccionesComiteadas));
+
+	}
+
+	private boolean checkAllTransactionStartedOutOfClosure(
+			RecoveryLogRecord item) {
+		return (!transaccionesActivas.contains(item.getTransaction()));
+	}
+
+	private boolean checkAllTransactionCommitOutOfClosure(RecoveryLogRecord item) {
+		return (transaccionesActivas.contains(item.getTransaction()));
 	}
 
 	private boolean checkAllTransactionsOnCKPTAreActive(RecoveryLogRecord item) {
-		if (item
-				.getClass()
-				.equals(
-						ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord.class)) {
-			return ((CheckPointStartLogRecord) item).getTransactions().equals(
-					transaccionesActivas);
+		return ((CheckPointStartLogRecord) item).getTransactions().equals(
+				transaccionesActivas);
 
-		}
-		return true;
 	}
 
 	private boolean checkAllTransactionCommitBeforAndCKPT(RecoveryLogRecord item) {
-		if (item
-				.getClass()
-				.equals(
-						ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord.class)) {
-			return transaccionesActivas.isEmpty();
-
+		boolean hasAny=false;
+		for (Iterator iterator = activeTXOnCKPT.iterator(); iterator.hasNext();) {
+			String tx = (String) iterator.next();
+		    hasAny = hasAny || transaccionesActivas.contains(tx);	
 		}
-		return true;
+		return !hasAny;
 	}
 
 	// [end]
@@ -178,23 +217,32 @@ public class AnalyzeLogDialog extends JDialog {
 
 	private void formatLogMesagges(javax.swing.JTextArea logInfo) {
 		String textToShow = "";
+		boolean showRecoveryInfo = true;
 
 		textToShow += ("\n" + "\t\tResultados de validacion del log\t\t\n");
 		for (Iterator iter = validationLogRecords.iterator(); iter.hasNext();) {
 			ValidationLogRecord record = (ValidationLogRecord) iter.next();
 			textToShow += (logInfo.getText() + record.getValidationDesc()
 					+ " :" + record.isResult() + "\n");
-
+			showRecoveryInfo = showRecoveryInfo && record.isResult();
 		}
 
-		textToShow += ("\n"
-				+ "\t\tPasos a efectuar segun algoritmo de recovery\t\t\n");
+		showRecoveryInfo(logInfo, textToShow, showRecoveryInfo);
+	}
 
-		for (Iterator<String> it = recoveryResults.getItems().iterator(); it
-				.hasNext();) {
-			textToShow += (logInfo.getText() + it.next() + "\n");
+	private void showRecoveryInfo(javax.swing.JTextArea logInfo,
+			String textToShow, boolean showRecoveryInfo) {
+		if (showRecoveryInfo) {
+			textToShow += ("\n"
+					+ "\t\tPasos a efectuar segun algoritmo de recovery\t\t\n");
+
+			for (Iterator<String> it = recoveryResults.getItems().iterator(); it
+					.hasNext();) {
+				textToShow += (logInfo.getText() + it.next() + "\n");
+			}
+		} else {
+			textToShow += ("El log es invalido, no hay informacion de recuperacion");
 		}
-
 		logInfo.setText(textToShow);
 	}
 
