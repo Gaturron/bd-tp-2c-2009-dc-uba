@@ -8,9 +8,14 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import javax.swing.BorderFactory;
+import javax.swing.GroupLayout;
 
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.LayoutStyle;
+import javax.swing.border.BevelBorder;
+import javax.swing.border.SoftBevelBorder;
 
 import ubadbtools.recoveryLogAnalyzer.common.RecoveryLog;
 import ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord;
@@ -18,6 +23,19 @@ import ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord;
 import ubadbtools.recoveryLogAnalyzer.logRecords.RecoveryLogRecord;
 import ubadbtools.recoveryLogAnalyzer.results.RecoveryResult;
 
+
+/**
+* This code was edited or generated using CloudGarden's Jigloo
+* SWT/Swing GUI Builder, which is free for non-commercial
+* use. If Jigloo is being used commercially (ie, by a corporation,
+* company or business for any purpose whatever) then you
+* should purchase a license for each developer using Jigloo.
+* Please visit www.cloudgarden.com for details.
+* Use of Jigloo implies acceptance of these licensing terms.
+* A COMMERCIAL LICENSE HAS NOT BEEN PURCHASED FOR
+* THIS MACHINE, SO JIGLOO OR THIS CODE CANNOT BE USED
+* LEGALLY FOR ANY CORPORATE OR COMMERCIAL PURPOSE.
+*/
 @SuppressWarnings("serial")
 public class AnalyzeLogDialog extends JDialog {
 	// estructuras comunes a los metodos de validacion
@@ -219,7 +237,7 @@ public class AnalyzeLogDialog extends JDialog {
 		String textToShow = "";
 		boolean showRecoveryInfo = true;
 
-		textToShow += ("\n" + "\t\tResultados de validacion del log\t\t\n");
+		textToShow += ("\n\n" + "\t\t*** Resultados de validacion del log ***\t\t\n\t==================================================\n");
 		for (Iterator iter = validationLogRecords.iterator(); iter.hasNext();) {
 			ValidationLogRecord record = (ValidationLogRecord) iter.next();
 			textToShow += (logInfo.getText() + record.getValidationDesc()
@@ -234,7 +252,7 @@ public class AnalyzeLogDialog extends JDialog {
 			String textToShow, boolean showRecoveryInfo) {
 		if (showRecoveryInfo) {
 			textToShow += ("\n"
-					+ "\t\tPasos a efectuar segun algoritmo de recovery\t\t\n");
+					+ "\t        *** Pasos a efectuar segun algoritmo de recovery ***\t\t\n\t=================================================\n");
 
 			for (Iterator<String> it = recoveryResults.getItems().iterator(); it
 					.hasNext();) {
@@ -259,11 +277,12 @@ public class AnalyzeLogDialog extends JDialog {
 		butCerrar = new javax.swing.JButton();
 		logInfo = new javax.swing.JTextArea();
 
-		setTitle("An�lisis de log");
+		setTitle("Analisis de log");
 
 		this.formatLogMesagges(logInfo);
 		logInfo.setEditable(false);
 		logInfo.setOpaque(true);
+		logInfo.setBorder(BorderFactory.createEtchedBorder(BevelBorder.LOWERED));
 		butCerrar.setText("Cerrar");
 		butCerrar.addMouseListener(new java.awt.event.MouseAdapter() {
 			public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -274,20 +293,24 @@ public class AnalyzeLogDialog extends JDialog {
 		javax.swing.GroupLayout layout = new javax.swing.GroupLayout(
 				getContentPane());
 		getContentPane().setLayout(layout);
-		layout.setHorizontalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addComponent(logInfo)
-						.addContainerGap(333, Short.MAX_VALUE).addComponent(
-								butCerrar).addContainerGap()));
-		layout.setVerticalGroup(layout.createParallelGroup(
-				javax.swing.GroupLayout.Alignment.LEADING).addGroup(
-				javax.swing.GroupLayout.Alignment.TRAILING,
-				layout.createSequentialGroup().addComponent(logInfo)
-						.addContainerGap(442, Short.MAX_VALUE).addComponent(
-								butCerrar).addContainerGap()));
+		this.setResizable(false);
+		layout.setVerticalGroup(layout.createSequentialGroup()
+			.addContainerGap()
+			.addComponent(logInfo, 0, 206, Short.MAX_VALUE)
+			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
+			.addComponent(butCerrar, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
+			.addContainerGap());
+		layout.setHorizontalGroup(layout.createSequentialGroup()
+			.addContainerGap()
+			.addGroup(layout.createParallelGroup()
+			    .addComponent(logInfo, GroupLayout.Alignment.LEADING, 0, 504, Short.MAX_VALUE)
+			    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
+			        .addGap(0, 459, Short.MAX_VALUE)
+			        .addComponent(butCerrar, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
+			.addContainerGap());
 
 		pack();
+		this.setSize(536, 415);
 	}// </editor-fold>//GEN-END:initComponents
 
 	// [end]
