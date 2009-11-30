@@ -33,7 +33,7 @@ public class RecoveryAnalyzerForm extends JFrame
     }
     //[end]
     
-	//[start] Métodos públicos
+	//[start] Mï¿½todos pï¿½blicos
 	//[start] getTableLog
 	public JTable getTableLog()
 	{
@@ -74,7 +74,7 @@ public class RecoveryAnalyzerForm extends JFrame
 	
 	//[end]
 	
-	//[start] Métodos privados
+	//[start] Mï¿½todos privados
 	 //[start] LoadLogFromFile
     private void LoadLogFromFile(File file) throws GUIException
 	{
@@ -86,7 +86,7 @@ public class RecoveryAnalyzerForm extends JFrame
 		}
 		catch(Exception e)
 		{
-			throw new GUIException("El log que se quiere cargar está mal formado (" + e.getMessage() + ")");
+			throw new GUIException("El log que se quiere cargar estï¿½ mal formado (" + e.getMessage() + ")");
 		}
 		
 		// Genero un nuevo controlador para la nueva historia
@@ -106,7 +106,7 @@ public class RecoveryAnalyzerForm extends JFrame
 		}
 		catch(Exception e)
 		{
-			throw new GUIException("El log que se quiere guardar es inválido (" + e.getMessage() + ")");
+			throw new GUIException("El log que se quiere guardar es invï¿½lido (" + e.getMessage() + ")");
 		}
 	}
     //[end]
@@ -145,7 +145,8 @@ public class RecoveryAnalyzerForm extends JFrame
         setTitle("Analizador de log");
         setMinimumSize(new java.awt.Dimension(536, 582));
         setResizable(false);
-
+        
+        
         tableLog.setModel(new LogTableModel());
         tableLog.setEnabled(false);
         tableLog.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -174,7 +175,7 @@ public class RecoveryAnalyzerForm extends JFrame
             }
         });
 
-        btnAddTransaction.setText("Agregar Transacción");
+        btnAddTransaction.setText("Agregar Transacciï¿½n");
         btnAddTransaction.setEnabled(false);
         btnAddTransaction.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
@@ -199,7 +200,7 @@ public class RecoveryAnalyzerForm extends JFrame
 
         jLabel1.setText("Transacciones");
 
-        jLabel2.setText("Ítems");
+        jLabel2.setText("ï¿½tems");
 
         lstItems.setModel(new DefaultListModel());
         lstItems.setSelectionMode(javax.swing.ListSelectionModel.SINGLE_SELECTION);
@@ -350,7 +351,7 @@ public class RecoveryAnalyzerForm extends JFrame
         // Creo el controlador y lo inicializo
         formControl = RecoveryAnalyzerFormController.CreateController(this);
    
-        // Por último, pongo en null al archivo cargado indicando que es un nuevo log
+        // Por ï¿½ltimo, pongo en null al archivo cargado indicando que es un nuevo log
         currentFile = null;
     }//GEN-LAST:event_NewMenuItemMouseClicked
 
@@ -358,14 +359,14 @@ public class RecoveryAnalyzerForm extends JFrame
     {//GEN-FIRST:event_LoadMenuItemMousePressed
     	JFileChooser fileChooser = new JFileChooser();
 
-	    //Sólo permito que se agreguen .xml
+	    //Sï¿½lo permito que se agreguen .xml
     	fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("XML file", "xml"));
         fileChooser.setAcceptAllFileFilterUsed(false);
 
         //Muestro el dialog
         int dialogResult = fileChooser.showDialog(this,"Cargar");
 
-        //Si seleccionaron algún archivo...
+        //Si seleccionaron algï¿½n archivo...
         if (dialogResult == JFileChooser.APPROVE_OPTION) 
         {
             File file = fileChooser.getSelectedFile();
@@ -376,10 +377,10 @@ public class RecoveryAnalyzerForm extends JFrame
             }
             catch(GUIException ex)
             {
-            	GUIHelper.showErrorMessage(this,"Ocurrió un error al cargar el log: " + ex.getMessage());
+            	GUIHelper.showErrorMessage(this,"Ocurriï¿½ un error al cargar el log: " + ex.getMessage());
             }
             
-            //Me guardo el archivo cargado así cuando quieren guardar ya tienen todo
+            //Me guardo el archivo cargado asï¿½ cuando quieren guardar ya tienen todo
             currentFile = file;
         }
     }//GEN-LAST:event_LoadMenuItemMousePressed
@@ -390,7 +391,7 @@ public class RecoveryAnalyzerForm extends JFrame
 		{
 			JFileChooser fileChooser = new JFileChooser();
 	
-		    //Sólo permito que se agreguen .xml
+		    //Sï¿½lo permito que se agreguen .xml
 	    	fileChooser.addChoosableFileFilter(new FileNameExtensionFilter("XML file", "xml"));
 	        fileChooser.setAcceptAllFileFilterUsed(false);
 	
@@ -401,7 +402,7 @@ public class RecoveryAnalyzerForm extends JFrame
 	        //Muestro el dialog
 	        int dialogResult = fileChooser.showDialog(this, "Guardar");
 	
-	        //Si seleccionaron algún archivo...
+	        //Si seleccionaron algï¿½n archivo...
 	        if (dialogResult == JFileChooser.APPROVE_OPTION) 
 	        {
 	            File file = fileChooser.getSelectedFile();
@@ -419,10 +420,10 @@ public class RecoveryAnalyzerForm extends JFrame
 	            }
 	            catch(GUIException ex)
 	            {
-	            	GUIHelper.showErrorMessage(this,"Ocurrió un error al guardar el log: " + ex.getMessage());
+	            	GUIHelper.showErrorMessage(this,"Ocurriï¿½ un error al guardar el log: " + ex.getMessage());
 	            }
 	            
-	            //Me guardo el path del archivo así cuando quieren guardar ya tienen todo
+	            //Me guardo el path del archivo asï¿½ cuando quieren guardar ya tienen todo
 	            currentFile = file;
 	        }
 		}		
@@ -442,7 +443,7 @@ public class RecoveryAnalyzerForm extends JFrame
 				}
 				catch (GUIException ex)
 				{
-					GUIHelper.showErrorMessage(this,"Ocurrió un error al editar el registro de log: " + ex.getMessage());
+					GUIHelper.showErrorMessage(this,"Ocurriï¿½ un error al editar el registro de log: " + ex.getMessage());
 				}
 	        }
         }
