@@ -1,0 +1,64 @@
+<ubadbtools.recoveryLogAnalyzer.common.RecoveryLog>
+  <logRecords>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t1</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t2</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t3</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>1</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>2</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>3</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord>
+      <transactions class="linked-hash-set">
+        <string>t1</string>
+        <string>t2</string>
+        <string>t3</string>
+      </transactions>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord>
+      <transaction>t1</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord>
+      <transaction>t2</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord>
+      <transaction>t3</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.CommitLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t4</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord/>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>3</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+  </logRecords>
+  <items class="linked-hash-set">
+    <string>a</string>
+    <string>b</string>
+    <string>c</string>
+  </items>
+  <transactions class="linked-hash-set">
+    <string>t1</string>
+    <string>t2</string>
+    <string>t3</string>
+    <string>t4</string>
+  </transactions>
+</ubadbtools.recoveryLogAnalyzer.common.RecoveryLog>
