@@ -37,6 +37,7 @@ public class RecoveryLog {
 		items = new LinkedHashSet<String>(); // Uso esta clase porque me provee
 		// un orden de iteración
 		// predecible (no como HashSet)
+		transactions= new LinkedHashSet<String>();
 	}
 
 	// [end]
