@@ -1,0 +1,92 @@
+<ubadbtools.recoveryLogAnalyzer.common.RecoveryLog>
+  <logRecords>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t1</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t2</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+      <transaction>t3</transaction>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>1</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>2</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+      <transaction>t1</transaction>
+      <item>a</item>
+      <oldValue>3</oldValue>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.UpdateLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord>
+      <transactions class="linked-hash-set">
+        <string>t1</string>
+        <string>t2</string>
+        <string>t3</string>
+      </transactions>
+    </ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointStartLogRecord>
+    <ubadbtools.recoveryLogAnalyzer.logRecords.CheckPointEndLogRecord/>
+  </logRecords>
+  <items class="linked-hash-set">
+    <string>a</string>
+    <string>b</string>
+    <string>c</string>
+  </items>
+  <transactions class="linked-hash-set"/>
+  <transaccionesActivas>
+    <string>t3</string>
+    <string>t2</string>
+    <string>t1</string>
+  </transaccionesActivas>
+  <transaccionesComiteadas/>
+  <transaccionesStarteadas>
+    <string>t3</string>
+    <string>t2</string>
+    <string>t1</string>
+  </transaccionesStarteadas>
+  <validationResult>
+    <validationLogRecords class="list">
+      <ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+        <validationDesc>No hay transacciones que hagan Commit
+sin haber hecho su correspondiente START:</validationDesc>
+        <result>true</result>
+      </ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+      <ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+        <validationDesc> 
+ No hay updates que no esten entre un start y un commit:</validationDesc>
+        <result>true</result>
+      </ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+      <ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+        <validationDesc> 
+ Los START CKPT contemplan todas las transacciones activas:</validationDesc>
+        <result>true</result>
+      </ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+      <ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+        <validationDesc> 
+ Los END CKPT estan colocados correctamente:</validationDesc>
+        <result>false</result>
+      </ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+      <ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+        <validationDesc> 
+ Las transacciones no se solapan</validationDesc>
+        <result>true</result>
+      </ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+      <ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+        <validationDesc> 
+ Los registros de CKPT no se solapan</validationDesc>
+        <result>true</result>
+      </ubadbtools.recoveryLogAnalyzer.common.ValidationLogRecord>
+    </validationLogRecords>
+  </validationResult>
+  <activeTXOnCKPT>
+    <string>t3</string>
+    <string>t2</string>
+    <string>t1</string>
+  </activeTXOnCKPT>
+</ubadbtools.recoveryLogAnalyzer.common.RecoveryLog>
