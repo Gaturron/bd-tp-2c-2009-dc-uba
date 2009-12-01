@@ -145,7 +145,8 @@ public class AnalyzeLogDialog extends JDialog
 			.addContainerGap());
 
 		pack();
-		this.setSize(536, 415);
+		this.setSize(645, 415);
+		this.setResizable(true);
     }// </editor-fold>//GEN-END:initComponents
 	//[end]
     
