@@ -7,6 +7,7 @@ import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
 import javax.swing.LayoutStyle;
 import javax.swing.border.BevelBorder;
 
@@ -108,6 +109,7 @@ public class AnalyzeLogDialog extends JDialog
 
         butCerrar = new javax.swing.JButton();
 		logInfo = new javax.swing.JTextArea();
+		JScrollPane scrollPane = new JScrollPane(logInfo);
 
 		setTitle("Analisis de log");
 
@@ -129,22 +131,21 @@ public class AnalyzeLogDialog extends JDialog
 		this.setResizable(false);
 		layout.setVerticalGroup(layout.createSequentialGroup()
 			.addContainerGap()
-			.addComponent(logInfo, 0, 206, Short.MAX_VALUE)
+			.addComponent(scrollPane, 0, 206, Short.MAX_VALUE)
 			.addPreferredGap(LayoutStyle.ComponentPlacement.UNRELATED)
 			.addComponent(butCerrar, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)
 			.addContainerGap());
 		layout.setHorizontalGroup(layout.createSequentialGroup()
 			.addContainerGap()
 			.addGroup(layout.createParallelGroup()
-			    .addComponent(logInfo, GroupLayout.Alignment.LEADING, 0, 504, Short.MAX_VALUE)
+			    .addComponent(scrollPane, GroupLayout.Alignment.LEADING, 0, 504, Short.MAX_VALUE)
 			    .addGroup(GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
 			        .addGap(0, 459, Short.MAX_VALUE)
 			        .addComponent(butCerrar, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE, GroupLayout.PREFERRED_SIZE)))
 			.addContainerGap());
 
 		pack();
-		this.setSize(636, 450);
-		this.setResizable(true);
+		this.setSize(536, 415);
     }// </editor-fold>//GEN-END:initComponents
 	//[end]
     
