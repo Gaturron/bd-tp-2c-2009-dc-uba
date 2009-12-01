@@ -35,7 +35,7 @@ public class RecoveryLog {
 	public RecoveryLog() {
 		logRecords = new ArrayList<RecoveryLogRecord>();
 		items = new LinkedHashSet<String>(); // Uso esta clase porque me provee
-		// un orden de iteraciï¿½n
+		// un orden de iteración
 		// predecible (no como HashSet)
 		transactions= new LinkedHashSet<String>();
 	}
@@ -81,7 +81,6 @@ public class RecoveryLog {
 
 	// [start] Validate
 	public ValidationResult validate() {
-		transactions = new LinkedHashSet<String>();
 		transaccionesActivas = new HashSet<String>();
 		transaccionesComiteadas = new HashSet<String>();
 		transaccionesStarteadas = new HashSet<String>();
