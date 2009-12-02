@@ -35,7 +35,7 @@ public class RecoveryLog {
 	public RecoveryLog() {
 		logRecords = new ArrayList<RecoveryLogRecord>();
 		items = new LinkedHashSet<String>(); // Uso esta clase porque me provee
-		// un orden de iteraciï¿½n
+		// un orden de iteración
 		// predecible (no como HashSet)
 		transactions= new LinkedHashSet<String>();
 	}
@@ -122,10 +122,10 @@ public class RecoveryLog {
 			if (item
 					.getClass()
 					.equals(
-							ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)) {
-				transaccionesActivas.add(item.getTransaction());
+							ubadbtools.recoveryLogAnalyzer.logRecords.StartLogRecord.class)) {				
 				resCheckAllTransactionStartedOutOfClosure = resCheckAllTransactionStartedOutOfClosure
 						&& checkAllTransactionStartedOutOfClosure(item);
+				transaccionesActivas.add(item.getTransaction());
 				transaccionesStarteadas.add(item.getTransaction());
 			}
 
@@ -180,23 +180,23 @@ public class RecoveryLog {
 		
 		validationResult
 				.add(new ValidationLogRecord(
-						"No hay transacciones que hagan Commitsin haber hecho su correspondiente START:",
+						"No hay transacciones que hagan Commit\nsin haber hecho su correspondiente START:",
 						resCheckAllStartAndCommitClosures));
 		validationResult.add(new ValidationLogRecord(
-				"No hay updates que no esten entre un start y un commit:",
+				" \n No hay updates que no esten entre un start y un commit:",
 				resCheckUpdateBetweenStartAndCommit));
 		validationResult.add(new ValidationLogRecord(
-				"Los START CKPT contemplan todas las transacciones activas:",
+				" \n Los START CKPT contemplan todas las transacciones activas:",
 				resCheckAllTransactionsOnCKPTAreActive));
 		validationResult.add(new ValidationLogRecord(
-				"Los END CKPT estan colocados correctamente:",
+				" \n Los END CKPT estan colocados correctamente:",
 				resCheckAllTransactionCommitBeforAndCKPT));
 		validationResult.add(new ValidationLogRecord(
-				"Las transacciones no se solapan",
+				" \n Las transacciones no se solapan",
 				resCheckAllTransactionStartedOutOfClosure
-						|| resCheckAllTransactionCommitOutOfClosure));
+					&& resCheckAllTransactionCommitOutOfClosure));
 		validationResult.add(new ValidationLogRecord(
-				"Los registros de CKPT no se solapan", resCheckAllCKPTClosure));
+				" \n Los registros de CKPT no se solapan", resCheckAllCKPTClosure));
 		return validationResult;
 	}
 
