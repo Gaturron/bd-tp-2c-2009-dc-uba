@@ -178,10 +178,10 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
 
     private void btAceptarMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btAceptarMouseClicked
 //        logRecord = new CommitLogRecord((String)cbTransactions.getSelectedItem());
-    	if(lstActiveTransactions.getModel().getSize() == 0)
-        	GUIHelper.showWarningMessage(this, "Falta ingresar algún dato");
-    	else
-    	{
+//	if(lstActiveTransactions.getModel().getSize() == 0)
+//        	GUIHelper.showWarningMessage(this, "Falta ingresar algï¿½n datoooo");
+//    	else
+//  	{
     		Set<String> transaccionesActivas = new LinkedHashSet<String>();
     		
     		ListModel model = new DefaultListModel();
@@ -195,7 +195,7 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
     		
     		logRecord = new CheckPointStartLogRecord(transaccionesActivas);
 	        this.setVisible(false);
-    	}
+//    	}
     }//GEN-LAST:event_btAceptarMouseClicked
     
     private void butInMouseClicked(MouseEvent evt) {
