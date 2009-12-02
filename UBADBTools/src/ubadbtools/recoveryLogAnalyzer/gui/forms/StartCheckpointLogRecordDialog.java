@@ -11,6 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.GroupLayout;
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.LayoutStyle;
 import javax.swing.ListModel;
 
@@ -76,7 +77,7 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
         btAceptar = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
-        setTitle("Start Checkpoint Vieja!");
+        setTitle("Start Checkpoint!");
 
         btCancelar.setText("Cancelar");
         btCancelar.addMouseListener(new java.awt.event.MouseAdapter() {
@@ -188,13 +189,17 @@ public class StartCheckpointLogRecordDialog extends javax.swing.JDialog {
     		model = lstActiveTransactions.getModel();
     		
     		for(int i = 0; i < model.getSize(); i++){
-    			transaccionesActivas.add((String) model.getElementAt(i));
+    			if( (String) model.getElementAt(i) != null){
+    				transaccionesActivas.add((String) model.getElementAt(i));
+    			}
     		}
-    		
-    		System.out.println(transaccionesActivas);
-    		
-    		logRecord = new CheckPointStartLogRecord(transaccionesActivas);
-	        this.setVisible(false);
+    		    		
+    		if(transaccionesActivas.isEmpty()){
+    			JOptionPane.showMessageDialog(this,"No agregó ninguna transacción");
+    		}else{
+    			logRecord = new CheckPointStartLogRecord(transaccionesActivas);
+    			this.setVisible(false);
+    		}
 //    	}
     }//GEN-LAST:event_btAceptarMouseClicked
     
