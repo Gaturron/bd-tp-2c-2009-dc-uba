@@ -239,6 +239,10 @@ public class RecoveryLog {
 	public RecoveryResult recoverFromCrash() {
 		// TODO: ESTO LO HIZO EL GOOONZA
 		RecoveryResult result = new RecoveryResult();
+		
+		String lastItem = "NoItem";
+		int posLastItem = logRecords.size();
+		
 		RecoveryLogRecord currentElem = null;
 		String currentTransaction = null;
 		HashSet<String> transactionsCommited = new HashSet<String>();
@@ -249,6 +253,11 @@ public class RecoveryLog {
 			currentElem = it.previous();
 			currentTransaction = currentElem.getTransaction();
 
+			//Se agrega para saber el ultimo item y su posicion
+			//System.out.println("Recovery Item: "+currentElem);
+			lastItem = currentElem.toString() +" (Posición en el log: "+posLastItem+")" ;
+			posLastItem--;
+			
 			// COMMIT RECORD?
 			if (currentElem instanceof CommitLogRecord) {
 				transactionsCommited.add(currentTransaction);
@@ -271,6 +280,7 @@ public class RecoveryLog {
 				 */
 				result.addItem("Agregar un Abort al log para la transaccion "
 						+ currentTransaction);
+				
 				// UPDATE RECORD?
 			} else if (currentElem instanceof UpdateLogRecord
 					&& !transactionsCommited.contains(currentTransaction)) {
@@ -330,6 +340,8 @@ public class RecoveryLog {
 			}
 		}
 
+		result.addItem("Ultimo Item analizado: "+lastItem);
+		
 		return result;
 
 	}
